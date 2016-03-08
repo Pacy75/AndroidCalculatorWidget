@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Calculator</string>
+    <string name="appwidget_text">Hello Widget</string>
+    <string name="number0">0</string>
+    <string name="number1">1</string>
+    <string name="number2">2</string>
+    <string name="number3">3</string>
+    <string name="number4">4</string>
+    <string name="number5">5</string>
+    <string name="number6">6</string>
+    <string name="number7">7</string>
+    <string name="number8">8</string>
+    <string name="number9">9</string>
+    <string name="plus">+</string>
+    <string name="minus">\u2212</string>
+    <string name="div">\u00f7</string>
+    <string name="mul">\u00d7</string>
+    <string name="dot">.</string>
+    <string name="equal">=</string>
+    <string name="ac">AC</string>
+</resources>

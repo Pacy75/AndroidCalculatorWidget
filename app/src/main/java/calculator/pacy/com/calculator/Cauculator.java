@@ -6,7 +6,7 @@ import android.content.Context;
  * Created by pacy on 2016/3/8.
  */
 public class Cauculator {
-    public static final int INPUT_MAX_LENGTH = 10;
+    public static final int INPUT_MAX_LENGTH = 20;
     public static final int RESP_OK = 0;
     public static final int RESP_ERROR_INPUT_TOLONG = -1;
 
@@ -15,24 +15,26 @@ public class Cauculator {
     private static final int STATE_STACK_TWO = 2;
     private static final int STATE_RESULT = 3;
 
-    private float prevValue_;
+    private double prevValue_;
     private CalKey prevOp_;
     private String displayStr_;
-    private float currValue_;
+    private double currValue_;
     private CalKey currOp_;
     private int state_;
 
     public static Cauculator getInstance(Context context, int appwidgetId) {
-        float prevValue = CalPreference.getPrevValue(context, appwidgetId);
+        System.out.println("Cauculator.getInstance");
+        double prevValue = CalPreference.getPrevValue(context, appwidgetId);
         CalKey prevOp = CalPreference.getPrevOp(context, appwidgetId);
         String displayStr = CalPreference.getDisplayStr(context, appwidgetId);
-        float currValue = CalPreference.getCurrValue(context, appwidgetId);
+        double currValue = CalPreference.getCurrValue(context, appwidgetId);
         CalKey currOp = CalPreference.getCurrOp(context, appwidgetId);
         int state = CalPreference.getStateCode(context, appwidgetId);
         return new Cauculator(prevValue, prevOp, displayStr, currValue, currOp, state);
     }
 
     public static void saveInstance(Context context, int appwidgetId, Cauculator calculator) {
+        System.out.println("Cauculator.saveInstance");
         CalPreference.setPrevValue(context, appwidgetId, calculator.getPrevValue());
         CalPreference.setPrevOp(context, appwidgetId, calculator.getPrevOp());
         CalPreference.setDisplayStr(context, appwidgetId, calculator.getDisplayStr());
@@ -41,7 +43,7 @@ public class Cauculator {
         CalPreference.setStateCode(context, appwidgetId, calculator.getState());
     }
 
-    public Cauculator(float prevValue, CalKey prevOp, String displayStr, float currValue,
+    public Cauculator(double prevValue, CalKey prevOp, String displayStr, double currValue,
                       CalKey currOp, int state) {
         prevValue_ = prevValue;
         prevOp_ = prevOp;
@@ -56,19 +58,11 @@ public class Cauculator {
             System.out.println("getDisplayValue:" + displayStr_);
             return displayStr_;
         } else if (state_ == STATE_STACK_TWO) {
-            System.out.println("getDisplayValue:" + formatFloat(currValue_));
-            if (0 == currValue_) {
-                return "0";
-            } else {
-                return formatFloat(currValue_);
-            }
+            System.out.println("getDisplayValue:" + formatDouble(currValue_));
+            return formatDouble(currValue_);
         } else {
-            System.out.println("getDisplayValue:" + formatFloat(prevValue_));
-            if (0 == prevValue_) {
-                return "0";
-            } else {
-                return formatFloat(prevValue_);
-            }
+            System.out.println("getDisplayValue:" + formatDouble(prevValue_));
+            return formatDouble(prevValue_);
         }
     }
 
@@ -105,29 +99,32 @@ public class Cauculator {
 
     private void getResult() {
         switch (state_) {
+            case STATE_INIT:
+                prevValue_ = formatString(displayStr_);
+                displayStr_ = "";
+                break;
             case STATE_STACK_ONE:
                 if (0 == displayStr_.length()) {
                     prevValue_ = calculate(prevValue_, prevValue_, prevOp_);
                 } else {
-                    prevValue_ = calculate(prevValue_, Float.valueOf(displayStr_), prevOp_);
+                    prevValue_ = calculate(prevValue_, formatString(displayStr_), prevOp_);
                 }
-                state_ = STATE_RESULT;
                 displayStr_ = "";
                 break;
             case STATE_STACK_TWO:
                 if (0 == displayStr_.length()) {
                     currValue_ = calculate(currValue_, currValue_, currOp_);
                 } else {
-                    currValue_ = calculate(currValue_, Float.valueOf(displayStr_), currOp_);
+                    currValue_ = calculate(currValue_, formatString(displayStr_), currOp_);
                 }
                 prevValue_ = calculate(prevValue_, currValue_, prevOp_);
                 displayStr_ = "";
-                state_ = STATE_RESULT;
                 break;
         }
         prevOp_ = null;
         currValue_ = 0;
         currOp_ = null;
+        state_ = STATE_RESULT;
     }
 
     private int inputNumeber(CalKey c) {
@@ -136,12 +133,19 @@ public class Cauculator {
             displayStr_ = "";
             state_ = STATE_INIT;
         }
-        if (CalKey.DOT.equals(c) && displayStr_.contains(".")) {
-            return RESP_OK;
+        if (CalKey.DOT.equals(c)) {
+            if (displayStr_.contains(".")) {
+                return RESP_OK;
+            }
+            if (0 == displayStr_.length()) {
+                displayStr_ = "0";
+            }
         }
         if (displayStr_.length() == 1 && displayStr_.contains("0")) {
             if (CalKey.NUMBER_0.equals(c)) {
                 return RESP_OK;
+            } else if (!CalKey.DOT.equals(c)) {
+                displayStr_ = "";
             }
         }
         if (displayStr_.length() >= INPUT_MAX_LENGTH) {
@@ -157,7 +161,7 @@ public class Cauculator {
                 if (displayStr_.length() == 0) {
                     prevValue_ = 0;
                 } else {
-                    prevValue_ = Float.valueOf(displayStr_);
+                    prevValue_ = formatString(displayStr_);
                 }
                 prevOp_ = c;
                 displayStr_ = "";
@@ -168,12 +172,12 @@ public class Cauculator {
                     prevOp_ = c;
                 } else if ((CalKey.PLUS.equals(prevOp_) || CalKey.MINUS.equals(prevOp_)) &&
                         (CalKey.MUL.equals(c) || CalKey.DIV.equals(c))) {
-                    currValue_ = Float.valueOf(displayStr_);
+                    currValue_ = formatString(displayStr_);
                     currOp_ = c;
                     displayStr_ = "";
                     state_ = STATE_STACK_TWO;
                 } else {
-                    prevValue_ = calculate(prevValue_, Float.valueOf(displayStr_), prevOp_);
+                    prevValue_ = calculate(prevValue_, formatString(displayStr_), prevOp_);
                     prevOp_ = c;
                     displayStr_ = "";
                 }
@@ -182,11 +186,11 @@ public class Cauculator {
                 if (displayStr_.length() == 0) {
                     currOp_ = c;
                 } else if (CalKey.MUL.equals(c) || CalKey.DIV.equals(c)) {
-                    currValue_ = calculate(currValue_, Float.valueOf(displayStr_), currOp_);
+                    currValue_ = calculate(currValue_, formatString(displayStr_), currOp_);
                     currOp_ = c;
                     displayStr_ = "";
                 } else {
-                    float temp = calculate(currValue_, Float.valueOf(displayStr_), currOp_);
+                    double temp = calculate(currValue_, formatString(displayStr_), currOp_);
                     prevValue_ = calculate(prevValue_, temp, prevOp_);
                     prevOp_ = c;
                     displayStr_ = "";
@@ -212,7 +216,7 @@ public class Cauculator {
         state_ = STATE_INIT;
     }
 
-    public float getPrevValue() {
+    public double getPrevValue() {
         return prevValue_;
     }
 
@@ -224,7 +228,7 @@ public class Cauculator {
         return displayStr_;
     }
 
-    public float getCurrValue() {
+    public double getCurrValue() {
         return currValue_;
     }
 
@@ -236,7 +240,7 @@ public class Cauculator {
         return state_;
     }
 
-    private float calculate(float a, float b, CalKey c) {
+    private double calculate(double a, double b, CalKey c) {
         if (CalKey.PLUS.equals(c)) {
             return a + b;
         } else if (CalKey.MINUS.equals(c)) {
@@ -248,7 +252,7 @@ public class Cauculator {
         }
     }
 
-    private String formatFloat(float f) {
+    private String formatDouble(double f) {
         if (f == (long) f) {
             return String.format("%d", (long) f);
         } else {
@@ -256,21 +260,17 @@ public class Cauculator {
         }
     }
 
+    private double formatString(String s) {
+        if (s.endsWith(".")) {
+            s = s.substring(0, s.length() - 1);
+        }
+        return Double.valueOf(s);
+    }
+
     public void printCalculator() {
-        System.out.println("=========");
-        System.out.println("state = " + state_);
-        System.out.println("displayStr = " + displayStr_);
-        System.out.println("prevValue = " + prevValue_);
-        if (null != prevOp_) {
-            System.out.println("prevOp = " + prevOp_.name());
-        } else {
-            System.out.println("prevOp = null");
-        }
-        System.out.println("currValue = " + currValue_);
-        if (null != currOp_) {
-            System.out.println("currOp = " + currOp_.name());
-        } else {
-            System.out.println("currOp = null");
-        }
+        System.out.println("===print===");
+        System.out.println("state = " + state_+", displayStr = " + displayStr_);
+        System.out.println("prevValue = " + prevValue_ + ", prevOp = " + ((prevOp_ == null) ? "" : prevOp_.name()));
+        System.out.println("currValue = " + currValue_ + ", currOp = " + ((currOp_ == null) ? "" : currOp_.name()));
     }
 }

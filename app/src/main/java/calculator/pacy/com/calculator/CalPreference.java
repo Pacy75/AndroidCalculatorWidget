@@ -15,13 +15,14 @@ public class CalPreference {
     private final static String CURR_OP = "CURR_OP";
     private final static String STATE_CODE = "STATE_CODE";
 
-    public static float getPrevValue(Context context, int appwidgetId) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getFloat(CALCULATOR_PREFERENCE + PREV_VALUE + appwidgetId, 0F);
+    public static double getPrevValue(Context context, int appwidgetId) {
+        long l = PreferenceManager.getDefaultSharedPreferences(context).getLong(CALCULATOR_PREFERENCE + PREV_VALUE + appwidgetId, 0);
+        return Double.longBitsToDouble(l);
     }
 
-    public static void setPrevValue(Context context, int appWidgetId, float newValue) {
+    public static void setPrevValue(Context context, int appWidgetId, double newValue) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().
-                putFloat(CALCULATOR_PREFERENCE + PREV_VALUE + appWidgetId, newValue).commit();
+                putLong(CALCULATOR_PREFERENCE + PREV_VALUE + appWidgetId, Double.doubleToRawLongBits(newValue)).commit();
     }
 
     public static CalKey getPrevOp(Context context, int appwidgetId) {
@@ -46,13 +47,14 @@ public class CalPreference {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString(CALCULATOR_PREFERENCE + DISPLAY_STR + appWidgetId, newString).commit();
     }
 
-    public static float getCurrValue(Context context, int appwidgetId) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getFloat(CALCULATOR_PREFERENCE + CURR_VALUE + appwidgetId, 0F);
+    public static double getCurrValue(Context context, int appwidgetId) {
+        long l = PreferenceManager.getDefaultSharedPreferences(context).getLong(CALCULATOR_PREFERENCE + CURR_VALUE + appwidgetId, 0);
+        return Double.longBitsToDouble(l);
     }
 
-    public static void setCurrValue(Context context, int appWidgetId, float newValue) {
+    public static void setCurrValue(Context context, int appWidgetId, double newValue) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().
-                putFloat(CALCULATOR_PREFERENCE + CURR_VALUE + appWidgetId, newValue).commit();
+                putLong(CALCULATOR_PREFERENCE + CURR_VALUE + appWidgetId, Double.doubleToRawLongBits(newValue)).commit();
     }
 
     public static CalKey getCurrOp(Context context, int appwidgetId) {

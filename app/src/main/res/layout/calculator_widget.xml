@@ -1,183 +1,233 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CCCDA7"
-    android:padding="@dimen/widget_margin"
-    android:orientation="vertical">
+    android:background="#6E6E6E"
+    android:orientation="vertical"
+    android:padding="2dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_margin="10dp"
         android:layout_weight="1"
+        android:background="@drawable/display_field"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/display"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|right"
             android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:paddingRight="10dp"
+            android:textColor="@android:color/black"
             android:textSize="40sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:paddingRight="10dp"/>
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/operator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|right"
             android:layout_weight="1"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center_vertical|right"
+            android:paddingRight="50dp"
+            android:textColor="@android:color/black"
             android:textSize="40sp"
-            android:textColor="#000000"
-            android:paddingRight="50dp"/>
+            android:textStyle="bold" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:elevation="-10dp"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/ac"
-            android:text="@string/ac"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/ac" />
+
         <Button
             android:id="@+id/div"
-            android:text="@string/div"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/div" />
+
         <Button
             android:id="@+id/mul"
-            android:text="@string/mul"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
-        <ImageButton
+            android:layout_weight="1"
+            android:text="@string/mul" />
+
+        <Button
             android:id="@+id/delete"
-            android:src="@drawable/backspace"
-            android:scaleType="centerInside"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/del" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/number7"
-            android:text="@string/number7"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/number7" />
+
         <Button
             android:id="@+id/number8"
-            android:text="@string/number8"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/number8" />
+
         <Button
             android:id="@+id/number9"
-            android:text="@string/number9"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/number9" />
+
         <Button
             android:id="@+id/minus"
-            android:text="@string/minus"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/minus" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/number4"
-            android:text="@string/number4"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/number4" />
+
         <Button
             android:id="@+id/number5"
-            android:text="@string/number5"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/number5" />
+
         <Button
             android:id="@+id/number6"
-            android:text="@string/number6"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/number6" />
+
         <Button
             android:id="@+id/plus"
-            android:text="@string/plus"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/plus" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
         android:orientation="horizontal">
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
+
                 <Button
                     android:id="@+id/number1"
-                    android:text="@string/number1"
+                    style="@style/Calculator.Button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:text="@string/number1" />
+
                 <Button
                     android:id="@+id/number2"
-                    android:text="@string/number2"
+                    style="@style/Calculator.Button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:text="@string/number2" />
+
                 <Button
                     android:id="@+id/number3"
-                    android:text="@string/number3"
+                    style="@style/Calculator.Button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:text="@string/number3" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
+
                 <Button
                     android:id="@+id/number0"
-                    android:text="@string/number0"
+                    style="@style/Calculator.Button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="2"
+                    android:text="@string/number0" />
+
                 <Button
                     android:id="@+id/dot"
-                    android:text="@string/dot"
+                    style="@style/Calculator.Button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2" />
+                    android:layout_weight="1"
+                    android:text="@string/dot" />
             </LinearLayout>
         </LinearLayout>
+
         <Button
             android:id="@+id/equal"
-            android:text="@string/equal"
+            style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/equal" />
     </LinearLayout>
 </LinearLayout>

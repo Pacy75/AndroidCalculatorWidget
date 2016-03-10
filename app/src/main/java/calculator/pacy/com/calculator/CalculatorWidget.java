@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.util.TypedValue;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -36,7 +37,9 @@ public class CalculatorWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.calculator_widget);
         Cauculator cauculator = Cauculator.getInstance(context, appWidgetId);
         cauculator.printCalculator();//TODO DEBUG
-        views.setTextViewText(R.id.display, cauculator.getDisplayValue());
+        String st = cauculator.getDisplayValue();
+        views.setTextViewTextSize(R.id.display, TypedValue.COMPLEX_UNIT_SP, st.length() > 10 ? 25f : 40f);
+        views.setTextViewText(R.id.display, st);
         views.setTextViewText(R.id.operator, cauculator.getDisplayOperator());
         setOnClickListeners(context, appWidgetId, views);
         if (null != appWidgetManager) {
@@ -142,7 +145,7 @@ public class CalculatorWidget extends AppWidgetProvider {
         int result = cauculator.input(calKey);
         cauculator.printCalculator();//TODO DEBUG
         if (result == Cauculator.INPUT_MAX_LENGTH) {
-//            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Max length of input is 10", Toast.LENGTH_SHORT).show();
         }
         Cauculator.saveInstance(context, appWidgetId, cauculator);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

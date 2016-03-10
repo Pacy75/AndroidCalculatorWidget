@@ -16,6 +16,7 @@
     <string name="div">\u00f7</string>
     <string name="mul">\u00d7</string>
     <string name="dot">.</string>
+    <string name="del">Del</string>
     <string name="equal">=</string>
     <string name="ac">AC</string>
 </resources>

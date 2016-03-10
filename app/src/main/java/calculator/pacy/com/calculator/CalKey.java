@@ -15,7 +15,7 @@ public enum CalKey {
     NUMBER_9(CalculatorWidget.NUMBER_9, CalKeyType.KEY_NUMBER, '9'),
     NUMBER_0(CalculatorWidget.NUMBER_0, CalKeyType.KEY_NUMBER, '0'),
     PLUS(CalculatorWidget.PLUS, CalKeyType.KEY_OPERATOR, '+'),
-    MINUS(CalculatorWidget.MINUS, CalKeyType.KEY_OPERATOR, '-'),
+    MINUS(CalculatorWidget.MINUS, CalKeyType.KEY_OPERATOR, '\u2212'),
     MUL(CalculatorWidget.MUL, CalKeyType.KEY_OPERATOR, '\u00d7'),
     DIV(CalculatorWidget.DIV, CalKeyType.KEY_OPERATOR, '\u00f7'),
     DOT(CalculatorWidget.DOT, CalKeyType.KEY_NUMBER, '.'),

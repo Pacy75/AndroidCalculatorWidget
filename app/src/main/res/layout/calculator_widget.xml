@@ -70,7 +70,7 @@
             android:text="@string/mul" />
 
         <Button
-            android:id="@+id/delete"
+            android:id="@+id/del"
             style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"

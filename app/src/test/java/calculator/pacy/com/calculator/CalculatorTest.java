@@ -77,14 +77,10 @@ public class CalculatorTest {
     @Test
     public void testSub() throws Exception {
         calculator.input(CalKey.NUMBER_2);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("", calculator.getDisplayOperator());
         calculator.input(CalKey.SUB);
         assertEquals("2", calculator.getDisplayValue());
         assertEquals("−", calculator.getDisplayOperator());
         calculator.input(CalKey.NUMBER_3);
-        assertEquals("3", calculator.getDisplayValue());
-        assertEquals("−", calculator.getDisplayOperator());
         calculator.input(CalKey.EQUAL);
         assertEquals("-1", calculator.getDisplayValue());
         assertEquals("", calculator.getDisplayOperator());
@@ -95,16 +91,12 @@ public class CalculatorTest {
         calculator.input(CalKey.NUMBER_2);
         calculator.input(CalKey.DOT);
         calculator.input(CalKey.NUMBER_4);
-        assertEquals("2.4", calculator.getDisplayValue());
-        assertEquals("", calculator.getDisplayOperator());
         calculator.input(CalKey.MUL);
         assertEquals("2.4", calculator.getDisplayValue());
         assertEquals("×", calculator.getDisplayOperator());
         calculator.input(CalKey.NUMBER_3);
         calculator.input(CalKey.DOT);
         calculator.input(CalKey.NUMBER_3);
-        assertEquals("3.3", calculator.getDisplayValue());
-        assertEquals("×", calculator.getDisplayOperator());
         calculator.input(CalKey.EQUAL);
         assertEquals("7.92", calculator.getDisplayValue());
         assertEquals("", calculator.getDisplayOperator());
@@ -113,17 +105,25 @@ public class CalculatorTest {
     @Test
     public void testDiv() throws Exception {
         calculator.input(CalKey.NUMBER_1);
-        assertEquals("1", calculator.getDisplayValue());
-        assertEquals("", calculator.getDisplayOperator());
         calculator.input(CalKey.DIV);
         assertEquals("1", calculator.getDisplayValue());
         assertEquals("÷", calculator.getDisplayOperator());
         calculator.input(CalKey.NUMBER_3);
-        assertEquals("3", calculator.getDisplayValue());
-        assertEquals("÷", calculator.getDisplayOperator());
         calculator.input(CalKey.EQUAL);
         assertEquals("0.3333333333333333", calculator.getDisplayValue());
         assertEquals("", calculator.getDisplayOperator());
+
+
+        calculator.input(CalKey.AC);
+        calculator.input(CalKey.NUMBER_9);
+        calculator.input(CalKey.DOT);
+        calculator.input(CalKey.NUMBER_6);
+        calculator.input(CalKey.DIV);
+        assertEquals("9.6", calculator.getDisplayValue());
+        assertEquals("÷", calculator.getDisplayOperator());
+        calculator.input(CalKey.NUMBER_3);
+        calculator.input(CalKey.EQUAL);
+        assertEquals("3.2", calculator.getDisplayValue());
     }
 
     @Test
@@ -151,44 +151,28 @@ public class CalculatorTest {
     @Test
     public void testIncompleteEqual() throws Exception {
         calculator.input(CalKey.NUMBER_2);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("", calculator.getDisplayOperator());
         calculator.input(CalKey.ADD);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("+", calculator.getDisplayOperator());
         calculator.input(CalKey.EQUAL);
         assertEquals("4", calculator.getDisplayValue());
         assertEquals("", calculator.getDisplayOperator());
 
         calculator.input(CalKey.AC);
         calculator.input(CalKey.NUMBER_2);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("", calculator.getDisplayOperator());
         calculator.input(CalKey.SUB);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("−", calculator.getDisplayOperator());
         calculator.input(CalKey.EQUAL);
         assertEquals("0", calculator.getDisplayValue());
         assertEquals("", calculator.getDisplayOperator());
 
         calculator.input(CalKey.AC);
         calculator.input(CalKey.NUMBER_2);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("", calculator.getDisplayOperator());
         calculator.input(CalKey.MUL);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("×", calculator.getDisplayOperator());
         calculator.input(CalKey.EQUAL);
         assertEquals("4", calculator.getDisplayValue());
         assertEquals("", calculator.getDisplayOperator());
 
         calculator.input(CalKey.AC);
         calculator.input(CalKey.NUMBER_2);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("", calculator.getDisplayOperator());
         calculator.input(CalKey.DIV);
-        assertEquals("2", calculator.getDisplayValue());
-        assertEquals("÷", calculator.getDisplayOperator());
         calculator.input(CalKey.EQUAL);
         assertEquals("1", calculator.getDisplayValue());
         assertEquals("", calculator.getDisplayOperator());

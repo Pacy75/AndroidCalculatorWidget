@@ -2,6 +2,12 @@ package calculator.pacy.com.calculator;
 
 import java.math.BigDecimal;
 
+import calculator.pacy.com.operator.AddOperator;
+import calculator.pacy.com.operator.DivOperator;
+import calculator.pacy.com.operator.MulOperator;
+import calculator.pacy.com.operator.Operator;
+import calculator.pacy.com.operator.SubOperator;
+
 /**
  * Created by pacy on 2016/3/11.
  */
@@ -10,6 +16,10 @@ public class MyBigDecimal {
         NORMAL, INFINITY, NaN;
     }
 
+    private static final Operator addOperator_ = new AddOperator();
+    private static final Operator subOperator_ = new SubOperator();
+    private static final Operator mulOperator_ = new MulOperator();
+    private static final Operator divOperator_ = new DivOperator();
     private static final String STR_INFINITY = "Infinity";
     private static final String STR_NaN = "NaN";
     public static final MyBigDecimal ZERO = new MyBigDecimal(BigDecimal.ZERO);
@@ -21,7 +31,7 @@ public class MyBigDecimal {
 
     public MyBigDecimal(String s) {
         if (STR_INFINITY.equals(s)) {
-           type_ = MyBigDecimalType.INFINITY;
+            type_ = MyBigDecimalType.INFINITY;
             return;
         }
         if (STR_NaN.equals(s)) {
@@ -53,82 +63,19 @@ public class MyBigDecimal {
     }
 
     public MyBigDecimal add(MyBigDecimal summand) {
-        if (this.isInfinity() || summand.isInfinity()) {
-            return MyBigDecimal.INFINITY;
-        }
-        if (this.isNaN() || summand.isNaN()) {
-            return MyBigDecimal.NaN;
-        }
-        double d1 = bigDecimal_.doubleValue();
-        double d2 = summand.getBigDecimal().doubleValue();
-        double d3 = d1 + d2;
-        if (Double.isInfinite(d3)) {
-            return MyBigDecimal.INFINITY;
-        }
-        if (Double.isNaN(d3)) {
-            return MyBigDecimal.NaN;
-        }
-        BigDecimal sum = this.bigDecimal_.add(summand.getBigDecimal());
-        return new MyBigDecimal(sum);
+        return addOperator_.get(this, summand);
     }
 
     public MyBigDecimal subtract(MyBigDecimal minuend) {
-        if (this.isInfinity() || minuend.isInfinity()) {
-            return MyBigDecimal.INFINITY;
-        }
-        if (this.isNaN() || minuend.isNaN()) {
-            return MyBigDecimal.NaN;
-        }
-        double d1 = bigDecimal_.doubleValue();
-        double d2 = minuend.getBigDecimal().doubleValue();
-        double d3 = d1 - d2;
-        if (Double.isInfinite(d3)) {
-            return MyBigDecimal.INFINITY;
-        }
-        if (Double.isNaN(d3)) {
-            return MyBigDecimal.NaN;
-        }
-        BigDecimal difference = this.bigDecimal_.subtract(minuend.getBigDecimal());
-        return new MyBigDecimal(difference);
+        return subOperator_.get(this, minuend);
     }
 
     public MyBigDecimal multiply(MyBigDecimal multiplicand) {
-        if (this.isInfinity() || multiplicand.isInfinity()) {
-            return MyBigDecimal.INFINITY;
-        }
-        if (this.isNaN() || multiplicand.isNaN()) {
-            return MyBigDecimal.NaN;
-        }
-        double d1 = bigDecimal_.doubleValue();
-        double d2 = multiplicand.getBigDecimal().doubleValue();
-        double d3 = d1 * d2;
-        if (Double.isInfinite(d3)) {
-            return MyBigDecimal.INFINITY;
-        }
-        if (Double.isNaN(d3)) {
-            return MyBigDecimal.NaN;
-        }
-        BigDecimal product = this.bigDecimal_.multiply(multiplicand.getBigDecimal());
-        return new MyBigDecimal(product);
+        return mulOperator_.get(this, multiplicand);
     }
 
     public MyBigDecimal divide(MyBigDecimal dividend) {
-        if (this.isInfinity() || dividend.isInfinity()) {
-            return MyBigDecimal.INFINITY;
-        }
-        if (this.isNaN() || dividend.isNaN()) {
-            return MyBigDecimal.NaN;
-        }
-        double d1 = bigDecimal_.doubleValue();
-        double d2 = dividend.getBigDecimal().doubleValue();
-        double d3 = d1 / d2;
-        if (Double.isInfinite(d3)) {
-            return MyBigDecimal.INFINITY;
-        }
-        if (Double.isNaN(d3)) {
-            return MyBigDecimal.NaN;
-        }
-        return new MyBigDecimal(d3);
+        return divOperator_.get(this, dividend);
     }
 
     @Override
@@ -153,4 +100,8 @@ public class MyBigDecimal {
     public boolean isNaN() {
         return MyBigDecimalType.NaN.equals(type_);
     }
+
+//    private BigDecimal operate(MyBigDecimal operand) {
+//
+//    }
 }

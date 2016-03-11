@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Calculator.Button" parent="@style/Theme.Design">
+    <style name="Calculator.Button" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/btn_number</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:fontFamily">sans-serif-thin"</item>

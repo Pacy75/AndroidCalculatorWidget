@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:layout_weight="1"
         android:background="@drawable/display_field"
         android:orientation="vertical">
@@ -18,11 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:gravity="center_vertical|right"
             android:paddingRight="10dp"
             android:textColor="@android:color/black"
-            android:textSize="40sp"
-            android:textStyle="bold" />
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="1.234567012345678900E1"/>
 
         <TextView
             android:id="@+id/operator"
@@ -41,7 +43,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:elevation="-10dp"
         android:orientation="horizontal">
 
         <Button
@@ -108,12 +109,12 @@
             android:text="@string/number9" />
 
         <Button
-            android:id="@+id/minus"
+            android:id="@+id/sub"
             style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/minus" />
+            android:text="@string/sub" />
     </LinearLayout>
 
     <LinearLayout
@@ -147,12 +148,12 @@
             android:text="@string/number6" />
 
         <Button
-            android:id="@+id/plus"
+            android:id="@+id/add"
             style="@style/Calculator.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/plus" />
+            android:text="@string/add" />
     </LinearLayout>
 
     <LinearLayout

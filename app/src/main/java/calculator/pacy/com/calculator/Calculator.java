@@ -5,8 +5,8 @@ import android.content.Context;
 /**
  * Created by pacy on 2016/3/8.
  */
-public class Cauculator {
-    public static final int INPUT_MAX_LENGTH = 20;
+public class Calculator {
+    public static final int INPUT_MAX_LENGTH = 15;
     public static final int RESP_OK = 0;
     public static final int RESP_ERROR_INPUT_TOLONG = -1;
 
@@ -15,26 +15,24 @@ public class Cauculator {
     private static final int STATE_STACK_TWO = 2;
     private static final int STATE_RESULT = 3;
 
-    private double prevValue_;
+    private MyBigDecimal prevValue_;
     private CalKey prevOp_;
     private String displayStr_;
-    private double currValue_;
+    private MyBigDecimal currValue_;
     private CalKey currOp_;
     private int state_;
 
-    public static Cauculator getInstance(Context context, int appwidgetId) {
-        System.out.println("Cauculator.getInstance");
-        double prevValue = CalPreference.getPrevValue(context, appwidgetId);
+    public static Calculator getInstance(Context context, int appwidgetId) {
+        MyBigDecimal prevValue = CalPreference.getPrevValue(context, appwidgetId);
         CalKey prevOp = CalPreference.getPrevOp(context, appwidgetId);
         String displayStr = CalPreference.getDisplayStr(context, appwidgetId);
-        double currValue = CalPreference.getCurrValue(context, appwidgetId);
+        MyBigDecimal currValue = CalPreference.getCurrValue(context, appwidgetId);
         CalKey currOp = CalPreference.getCurrOp(context, appwidgetId);
         int state = CalPreference.getStateCode(context, appwidgetId);
-        return new Cauculator(prevValue, prevOp, displayStr, currValue, currOp, state);
+        return new Calculator(prevValue, prevOp, displayStr, currValue, currOp, state);
     }
 
-    public static void saveInstance(Context context, int appwidgetId, Cauculator calculator) {
-        System.out.println("Cauculator.saveInstance");
+    public static void saveInstance(Context context, int appwidgetId, Calculator calculator) {
         CalPreference.setPrevValue(context, appwidgetId, calculator.getPrevValue());
         CalPreference.setPrevOp(context, appwidgetId, calculator.getPrevOp());
         CalPreference.setDisplayStr(context, appwidgetId, calculator.getDisplayStr());
@@ -43,7 +41,7 @@ public class Cauculator {
         CalPreference.setStateCode(context, appwidgetId, calculator.getState());
     }
 
-    public Cauculator(double prevValue, CalKey prevOp, String displayStr, double currValue,
+    public Calculator(MyBigDecimal prevValue, CalKey prevOp, String displayStr, MyBigDecimal currValue,
                       CalKey currOp, int state) {
         prevValue_ = prevValue;
         prevOp_ = prevOp;
@@ -55,26 +53,20 @@ public class Cauculator {
 
     public String getDisplayValue() {
         if (displayStr_.length() > 0) {
-            System.out.println("getDisplayValue:" + displayStr_);
             return displayStr_;
         } else if (state_ == STATE_STACK_TWO) {
-            System.out.println("getDisplayValue:" + formatDouble(currValue_));
             return formatDouble(currValue_);
         } else {
-            System.out.println("getDisplayValue:" + formatDouble(prevValue_));
             return formatDouble(prevValue_);
         }
     }
 
     public String getDisplayOperator() {
         if (state_ == STATE_INIT || state_ == STATE_RESULT) {
-            System.out.println("getDisplayOperator:");
             return "";
         } else if (state_ == STATE_STACK_ONE) {
-            System.out.println("getDisplayOperator:" + prevOp_.getChar());
             return Character.toString(prevOp_.getChar());
         } else if (state_ == STATE_STACK_TWO) {
-            System.out.println("getDisplayOperator:" + currOp_.getChar());
             return Character.toString(currOp_.getChar());
         }
         return "";
@@ -86,6 +78,14 @@ public class Cauculator {
         } else if (CalKey.EQUAL.equals(c)) {
             getResult();
         } else if (CalKey.DEL.equals(c)) {
+            if (getDisplayValue().equals("Infinity") || getDisplayValue().equals("NaN")) {
+                return RESP_OK;
+            }
+            if (state_ == STATE_RESULT) {
+                displayStr_ = formatDouble(prevValue_);
+                prevValue_ = MyBigDecimal.ZERO;
+                state_ = STATE_INIT;
+            }
             if (displayStr_.length() > 0) {
                 displayStr_ = displayStr_.substring(0, displayStr_.length() - 1);
             }
@@ -122,14 +122,14 @@ public class Cauculator {
                 break;
         }
         prevOp_ = null;
-        currValue_ = 0;
+        currValue_ = MyBigDecimal.ZERO;
         currOp_ = null;
         state_ = STATE_RESULT;
     }
 
     private int inputNumeber(CalKey c) {
         if (STATE_RESULT == state_) {
-            prevValue_ = 0;
+            prevValue_ = MyBigDecimal.ZERO;
             displayStr_ = "";
             state_ = STATE_INIT;
         }
@@ -159,7 +159,7 @@ public class Cauculator {
         switch (state_) {
             case STATE_INIT:
                 if (displayStr_.length() == 0) {
-                    prevValue_ = 0;
+                    prevValue_ = MyBigDecimal.ZERO;
                 } else {
                     prevValue_ = formatString(displayStr_);
                 }
@@ -170,7 +170,7 @@ public class Cauculator {
             case STATE_STACK_ONE:
                 if (displayStr_.length() == 0) {
                     prevOp_ = c;
-                } else if ((CalKey.PLUS.equals(prevOp_) || CalKey.MINUS.equals(prevOp_)) &&
+                } else if ((CalKey.ADD.equals(prevOp_) || CalKey.SUB.equals(prevOp_)) &&
                         (CalKey.MUL.equals(c) || CalKey.DIV.equals(c))) {
                     currValue_ = formatString(displayStr_);
                     currOp_ = c;
@@ -190,11 +190,11 @@ public class Cauculator {
                     currOp_ = c;
                     displayStr_ = "";
                 } else {
-                    double temp = calculate(currValue_, formatString(displayStr_), currOp_);
+                    MyBigDecimal temp = calculate(currValue_, formatString(displayStr_), currOp_);
                     prevValue_ = calculate(prevValue_, temp, prevOp_);
                     prevOp_ = c;
                     displayStr_ = "";
-                    currValue_ = 0;
+                    currValue_ = MyBigDecimal.ZERO;
                     currOp_ = null;
                     state_ = STATE_STACK_ONE;
                 }
@@ -208,15 +208,15 @@ public class Cauculator {
     }
 
     public void clear() {
-        prevValue_ = 0;
+        prevValue_ = MyBigDecimal.ZERO;
         prevOp_ = null;
         displayStr_ = "";
-        currValue_ = 0;
+        currValue_ = MyBigDecimal.ZERO;
         currOp_ = null;
         state_ = STATE_INIT;
     }
 
-    public double getPrevValue() {
+    public MyBigDecimal getPrevValue() {
         return prevValue_;
     }
 
@@ -228,7 +228,7 @@ public class Cauculator {
         return displayStr_;
     }
 
-    public double getCurrValue() {
+    public MyBigDecimal getCurrValue() {
         return currValue_;
     }
 
@@ -240,37 +240,30 @@ public class Cauculator {
         return state_;
     }
 
-    private double calculate(double a, double b, CalKey c) {
-        if (CalKey.PLUS.equals(c)) {
-            return a + b;
-        } else if (CalKey.MINUS.equals(c)) {
-            return a - b;
+    private MyBigDecimal calculate(MyBigDecimal a, MyBigDecimal b, CalKey c) {
+        if (CalKey.ADD.equals(c)) {
+            return a.add(b);
+        } else if (CalKey.SUB.equals(c)) {
+            return a.subtract(b);
         } else if (CalKey.MUL.equals(c)) {
-            return a * b;
+            return a.multiply(b);
         } else {
-            return a / b;
+            return a.divide(b);
         }
     }
 
-    private String formatDouble(double f) {
-        if (f == (long) f) {
-            return String.format("%d", (long) f);
-        } else {
-            return String.format("%s", f);
-        }
+    private String formatDouble(MyBigDecimal bigDecimal) {
+        return bigDecimal.toString();
     }
 
-    private double formatString(String s) {
+    private MyBigDecimal formatString(String s) {
         if (s.endsWith(".")) {
             s = s.substring(0, s.length() - 1);
         }
-        return Double.valueOf(s);
-    }
-
-    public void printCalculator() {
-        System.out.println("===print===");
-        System.out.println("state = " + state_+", displayStr = " + displayStr_);
-        System.out.println("prevValue = " + prevValue_ + ", prevOp = " + ((prevOp_ == null) ? "" : prevOp_.name()));
-        System.out.println("currValue = " + currValue_ + ", currOp = " + ((currOp_ == null) ? "" : currOp_.name()));
+        try {
+            return new MyBigDecimal(s);
+        } catch (NumberFormatException e) {
+            return MyBigDecimal.ZERO;
+        }
     }
 }

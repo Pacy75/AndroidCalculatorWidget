@@ -24,26 +24,34 @@ public class CalculatorWidget extends AppWidgetProvider {
     public static final String NUMBER_8 = "calculator.pacy.com.calculator.8";
     public static final String NUMBER_9 = "calculator.pacy.com.calculator.9";
     public static final String DOT = "calculator.pacy.com.calculator.dot";
-    public static final String PLUS = "calculator.pacy.com.calculator.plus";
-    public static final String MINUS = "calculator.pacy.comcalculator.minus";
+    public static final String ADD = "calculator.pacy.com.calculator.add";
+    public static final String SUB = "calculator.pacy.com.calculator.sub";
     public static final String MUL = "calculator.pacy.com.calculator.mul";
     public static final String DIV = "calculator.pacy.com.calculator.div";
     public static final String EQUALS = "calculator.pacy.com.calculator.equals";
-    public static final String DEL = "com.numix.calculator.delete";
+    public static final String DEL = "calculator.pacy.com.calculator.delete";
     public static final String AC = "calculator.pacy.com.calculator.AC";
 
     private void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        System.out.println("updateAppWidget:" + appWidgetId);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.calculator_widget);
-        Cauculator cauculator = Cauculator.getInstance(context, appWidgetId);
-        cauculator.printCalculator();//TODO DEBUG
-        String st = cauculator.getDisplayValue();
-        views.setTextViewTextSize(R.id.display, TypedValue.COMPLEX_UNIT_SP, st.length() > 10 ? 25f : 40f);
+        Calculator calculator = Calculator.getInstance(context, appWidgetId);
+        String st = calculator.getDisplayValue();
+        views.setTextViewTextSize(R.id.display, TypedValue.COMPLEX_UNIT_SP, getProperTextSize(st.length()));
         views.setTextViewText(R.id.display, st);
-        views.setTextViewText(R.id.operator, cauculator.getDisplayOperator());
+        views.setTextViewText(R.id.operator, calculator.getDisplayOperator());
         setOnClickListeners(context, appWidgetId, views);
         if (null != appWidgetManager) {
             appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+    }
+
+    private float getProperTextSize(int strLength) {
+        if (strLength > 18) {
+            return 24f;
+        } else if (strLength > 12) {
+            return 30f;
+        } else {
+            return 40f;
         }
     }
 
@@ -90,11 +98,11 @@ public class CalculatorWidget extends AppWidgetProvider {
         intent.setAction(MUL);
         remoteViews.setOnClickPendingIntent(R.id.mul, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
 
-        intent.setAction(MINUS);
-        remoteViews.setOnClickPendingIntent(R.id.minus, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+        intent.setAction(SUB);
+        remoteViews.setOnClickPendingIntent(R.id.sub, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
 
-        intent.setAction(PLUS);
-        remoteViews.setOnClickPendingIntent(R.id.plus, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+        intent.setAction(ADD);
+        remoteViews.setOnClickPendingIntent(R.id.add, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         intent.setAction(EQUALS);
         remoteViews.setOnClickPendingIntent(R.id.equal, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
@@ -108,10 +116,7 @@ public class CalculatorWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("onReceive");
         int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
-        System.out.println("appWidgetId=" + appWidgetId);
-        System.out.println("action=" + intent.getAction());
         CalKey calKey = CalKey.getByAction(intent.getAction());
         if (null != calKey) {
             handleReceive(context, appWidgetId, calKey);
@@ -121,7 +126,6 @@ public class CalculatorWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        System.out.println("onUpdate:" + appWidgetIds.toString());
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
@@ -129,25 +133,20 @@ public class CalculatorWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        System.out.println("onEnabled");
     }
 
     @Override
     public void onDisabled(Context context) {
-        System.out.println("onDisabled");
 
     }
 
     private void handleReceive(Context context, int appWidgetId, CalKey calKey) {
-        Cauculator cauculator = Cauculator.getInstance(context, appWidgetId);
-        cauculator.printCalculator();//TODO DEBUG
-        System.out.println(calKey.name());
-        int result = cauculator.input(calKey);
-        cauculator.printCalculator();//TODO DEBUG
-        if (result == Cauculator.INPUT_MAX_LENGTH) {
-            Toast.makeText(context, "Max length of input is 10", Toast.LENGTH_SHORT).show();
+        Calculator calculator = Calculator.getInstance(context, appWidgetId);
+        int result = calculator.input(calKey);
+        if (result == Calculator.INPUT_MAX_LENGTH) {
+            Toast.makeText(context, "Max length of input is " + Calculator.INPUT_MAX_LENGTH, Toast.LENGTH_SHORT).show();
         }
-        Cauculator.saveInstance(context, appWidgetId, cauculator);
+        Calculator.saveInstance(context, appWidgetId, calculator);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         updateAppWidget(context, appWidgetManager, appWidgetId);
     }

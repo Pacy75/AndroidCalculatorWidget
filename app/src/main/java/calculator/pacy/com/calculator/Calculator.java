@@ -55,9 +55,9 @@ public class Calculator {
         if (displayStr_.length() > 0) {
             return displayStr_;
         } else if (state_ == STATE_STACK_TWO) {
-            return formatDouble(currValue_);
+            return currValue_.toString();
         } else {
-            return formatDouble(prevValue_);
+            return prevValue_.toString();
         }
     }
 
@@ -82,7 +82,7 @@ public class Calculator {
                 return RESP_OK;
             }
             if (state_ == STATE_RESULT) {
-                displayStr_ = formatDouble(prevValue_);
+                displayStr_ = prevValue_.toString();
                 prevValue_ = MyBigDecimal.ZERO;
                 state_ = STATE_INIT;
             }
@@ -90,7 +90,7 @@ public class Calculator {
                 displayStr_ = displayStr_.substring(0, displayStr_.length() - 1);
             }
         } else if (CalKeyType.KEY_NUMBER.equals(c.getType())) {
-            return inputNumeber(c);
+            return inputNumber(c);
         } else if (CalKeyType.KEY_OPERATOR.equals(c.getType())) {
             inputOp(c);
         }
@@ -127,7 +127,7 @@ public class Calculator {
         state_ = STATE_RESULT;
     }
 
-    private int inputNumeber(CalKey c) {
+    private int inputNumber(CalKey c) {
         if (STATE_RESULT == state_) {
             prevValue_ = MyBigDecimal.ZERO;
             displayStr_ = "";
@@ -252,18 +252,10 @@ public class Calculator {
         }
     }
 
-    private String formatDouble(MyBigDecimal bigDecimal) {
-        return bigDecimal.toString();
-    }
-
     private MyBigDecimal formatString(String s) {
         if (s.endsWith(".")) {
             s = s.substring(0, s.length() - 1);
         }
-        try {
-            return new MyBigDecimal(s);
-        } catch (NumberFormatException e) {
-            return MyBigDecimal.ZERO;
-        }
+        return new MyBigDecimal(s);
     }
 }

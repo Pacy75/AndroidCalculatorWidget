@@ -5,9 +5,9 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import java.util.HashMap;
 
@@ -34,6 +34,7 @@ public class CalculatorWidget extends AppWidgetProvider {
     public static final String EQUALS = "calculator.pacy.com.calculator.equals";
     public static final String DEL = "calculator.pacy.com.calculator.delete";
     public static final String AC = "calculator.pacy.com.calculator.AC";
+
     static {
         ACTION_MAP.put(NUMBER_0, R.id.number0);
         ACTION_MAP.put(NUMBER_1, R.id.number1);
@@ -63,9 +64,7 @@ public class CalculatorWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.display, st);
         views.setTextViewText(R.id.operator, calculator.getDisplayOperator());
         setOnClickListeners(context, appWidgetId, views);
-        if (null != appWidgetManager) {
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-        }
+        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     private float getProperTextSize(int strLength) {
@@ -81,7 +80,9 @@ public class CalculatorWidget extends AppWidgetProvider {
     private void setOnClickListeners(Context context, int appWidgetId, RemoteViews remoteViews) {
         final Intent intent = new Intent(context, CalculatorWidget.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        for(String action : ACTION_MAP.keySet()) {
+        Uri data = Uri.parse("CalculatorWidget://id/" + appWidgetId);
+        intent.setData(data);
+        for (String action : ACTION_MAP.keySet()) {
             intent.setAction(action);
             remoteViews.setOnClickPendingIntent(ACTION_MAP.get(action),
                     PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
@@ -107,10 +108,7 @@ public class CalculatorWidget extends AppWidgetProvider {
 
     private void handleReceive(Context context, int appWidgetId, CalKey calKey) {
         Calculator calculator = Calculator.getInstance(context, appWidgetId);
-        int result = calculator.input(calKey);
-        if (result == Calculator.INPUT_MAX_LENGTH) {
-            Toast.makeText(context, "Max length of input is " + Calculator.INPUT_MAX_LENGTH, Toast.LENGTH_SHORT).show();
-        }
+        calculator.input(calKey);
         Calculator.saveInstance(context, appWidgetId, calculator);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         updateAppWidget(context, appWidgetManager, appWidgetId);

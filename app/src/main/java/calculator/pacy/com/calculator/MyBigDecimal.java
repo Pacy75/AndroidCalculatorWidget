@@ -13,7 +13,7 @@ import calculator.pacy.com.operator.SubOperator;
  */
 public class MyBigDecimal {
     private enum MyBigDecimalType {
-        NORMAL, INFINITY, NaN;
+        NORMAL, INFINITY, NaN
     }
 
     private static final Operator addOperator_ = new AddOperator();
@@ -43,10 +43,6 @@ public class MyBigDecimal {
         } catch (NumberFormatException e) {
             type_ = MyBigDecimalType.NaN;
         }
-    }
-
-    private MyBigDecimal(double d) {
-        bigDecimal_ = new BigDecimal(d);
     }
 
     public MyBigDecimal(BigDecimal bigDecimal) {
@@ -100,8 +96,4 @@ public class MyBigDecimal {
     public boolean isNaN() {
         return MyBigDecimalType.NaN.equals(type_);
     }
-
-//    private BigDecimal operate(MyBigDecimal operand) {
-//
-//    }
 }
